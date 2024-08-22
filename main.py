@@ -2,9 +2,9 @@ import sys
 import os
 import re
 
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QGridLayout, QLabel, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPainter, QPixmap
-from PyQt5.QtCore import QRect
+from PyQt5.QtCore import QRect, Qt
 
 WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,14 +20,16 @@ class ManagementWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        fields = ["from", "to", "rate", "fixed"]
+
         self.setWindowTitle("Komunalai")
 
         central_w = QWidget()
         self.setCentralWidget(central_w)
-        self.setGeometry(1000, 300, 200, 250)
+        self.setGeometry(700, 300, 500, 250)
 
-        vbox = QVBoxLayout(central_w)
-        hbox = QHBoxLayout(central_w)
+        grid = QGridLayout(central_w)
+        
 
         # Elektra
         self.electricity_label = QLabel(self)
@@ -36,10 +38,12 @@ class ManagementWindow(QMainWindow):
         self.electricity_value_from = QLineEdit(self)
         self.electricity_value_to = QLineEdit(self)
         self.electricity_rate = QLineEdit(self)
+        self.electricity_fixed = QLineEdit(self)
 
         self.electricity_value_from.setPlaceholderText("Nuo")
         self.electricity_value_to.setPlaceholderText("Iki")
         self.electricity_rate.setPlaceholderText("Tarifas")
+        self.electricity_fixed.setPlaceholderText("Pastovus")
         
         # Dujos
         self.gas_label = QLabel(self)
@@ -48,10 +52,12 @@ class ManagementWindow(QMainWindow):
         self.gas_value_from = QLineEdit(self)
         self.gas_value_to = QLineEdit(self)
         self.gas_rate = QLineEdit(self)
+        self.gas_fixed = QLineEdit(self)
 
         self.gas_value_from.setPlaceholderText("Nuo")
         self.gas_value_to.setPlaceholderText("Iki")
         self.gas_rate.setPlaceholderText("Tarifas")
+        self.gas_fixed.setPlaceholderText("Pastovus")
         
         # Saltas
         self.cold_h2o_label = QLabel(self)
@@ -60,10 +66,12 @@ class ManagementWindow(QMainWindow):
         self.cold_h2o_value_from = QLineEdit(self)
         self.cold_h2o_value_to = QLineEdit(self)
         self.cold_h2o_rate = QLineEdit(self)
+        self.cold_h2o_fixed = QLineEdit(self)
 
         self.cold_h2o_value_from.setPlaceholderText("Nuo")
         self.cold_h2o_value_to.setPlaceholderText("Iki")
         self.cold_h2o_rate.setPlaceholderText("Tarifas")
+        self.cold_h2o_fixed.setPlaceholderText("Pastovus")
 
         # Karstas
         self.hot_h2o_label = QLabel(self)
@@ -72,35 +80,52 @@ class ManagementWindow(QMainWindow):
         self.hot_h2o_value_from = QLineEdit(self)
         self.hot_h2o_value_to = QLineEdit(self)
         self.hot_h2o_rate = QLineEdit(self)
+        self.hot_h2o_fixed = QLineEdit(self)
 
         self.hot_h2o_value_from.setPlaceholderText("Nuo")
         self.hot_h2o_value_to.setPlaceholderText("Iki")
         self.hot_h2o_rate.setPlaceholderText("Tarifas")
+        self.hot_h2o_fixed.setPlaceholderText("Pastovus")
 
-        self.submit_btn = QPushButton("Išsiųsti", self)
+        # Nuoma
+        self.rent_label = QLabel(self)
+        self.rent_label.setText("Nuoma")
 
-
-        vbox.addWidget(self.electricity_label)
-        vbox.addWidget(self.electricity_value_from)
-        vbox.addWidget(self.electricity_value_to)
-        vbox.addWidget(self.electricity_rate)
+        self.rent_value_from = QLineEdit(self)
+        self.rent_value_to = QLineEdit(self)
+        self.rent_rate = QLineEdit(self)
+        self.rent_fixed = QLineEdit(self)
         
-        vbox.addWidget(self.gas_label)
-        vbox.addWidget(self.gas_value_from)
-        vbox.addWidget(self.gas_value_to)
-        vbox.addWidget(self.gas_rate)
+        self.rent_value_from.setEnabled(False), self.rent_value_to.setEnabled(False), self.rent_rate.setEnabled(False)
         
-        vbox.addWidget(self.cold_h2o_label)
-        vbox.addWidget(self.cold_h2o_value_from)
-        vbox.addWidget(self.cold_h2o_value_to)
-        vbox.addWidget(self.cold_h2o_rate)
+        self.rent_value_from.setPlaceholderText("-")
+        self.rent_value_to.setPlaceholderText("-")
+        self.rent_rate.setPlaceholderText("-")
+        self.rent_fixed.setPlaceholderText("Pastovus")
 
-        vbox.addWidget(self.hot_h2o_label)
-        vbox.addWidget(self.hot_h2o_value_from)
-        vbox.addWidget(self.hot_h2o_value_to)
-        vbox.addWidget(self.hot_h2o_rate)
+        self.submit_btn = QPushButton(self)
+        self.submit_btn.setText("Issiusti")
 
-        vbox.addWidget(self.submit_btn)
+        # Create widgets to add to layout dynamically
+        widgets = dict()
+        for item in self.__dict__:
+            if "btn" not in item: # Add button individually
+                widgets[item.split("_")[0]] = []
+        else:
+            for item, obj in self.__dict__.items():
+                if "btn" not in item: # Add button individually
+                    widgets[item.split("_")[0]].append(obj)
+
+        row = 0
+        for widget, obj_lst in widgets.items():
+            col = 0
+            for obj in obj_lst:
+                grid.addWidget(obj, row, col)
+                col += 1
+            
+            row +=1
+        
+        grid.addWidget(self.submit_btn, row, int(row/2), 1, 1)
 
 
 # separate validations in class
