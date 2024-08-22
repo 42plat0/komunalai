@@ -6,6 +6,20 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QGr
 from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtCore import QRect, Qt
 
+"""
+    TODO's 
+    
+        1. Parasyti funkcija, kuri suskaiciuotu pagal tarifa ir ar pastovu rate sumas ir jas sudetu i dictionary
+        2. Funkcija patalpinti i klase (Galbut atskira) ir integruoti i window kalse
+        3. Pagaminti excelio faila suformatuota is gautu duomenu
+        
+        Papildomos idejos (TODO):
+
+            -. Issiusti emaila su attachmentu Nuomininkui
+            -. Padaryti pavedima issiuntus attachmenta
+            -. Config failas, kuriuo pasirenkami laukeliai, pavadinimas failu, direktorija, emailas etc..
+"""
+
 WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Validation():
@@ -141,3 +155,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
