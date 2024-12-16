@@ -22,14 +22,6 @@ from PyQt5.QtCore import QRect, Qt
 
 WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
 
-class Validation():
-
-    @staticmethod
-    def license_plates(plate):
-        valid_plate_pattern = r"^[a-z]{3}-[0-9]{3}$"
-        return bool(re.fullmatch(valid_plate_pattern, plate, re.IGNORECASE))
-
-
 class ManagementWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -145,60 +137,15 @@ class ManagementWindow(QMainWindow):
 # separate validations in class
 # main class which runs windows
 def main():
-    # app = QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
-    # management_window = ManagementWindow()
-    # management_window.show()
+    management_window = ManagementWindow()
+    management_window.show()
 
-    # sys.exit(app.exec_())
+    sys.exit(app.exec_())
     pass
 
 
 if __name__ == "__main__":
     main()
 
-
-utils = [
-    ("electricity", {
-        "from": "0010697.0",
-        "to": "0010739.0",
-        "rate": "0.214",
-        "fixed": None
-    }),
-
-    ("gas", {
-        "from": "01488000",
-        "to" : "01490457",
-        "rate": "1.4",
-        "fixed": "0.56"
-    }),
-
-    ("hot_h2o", {
-        "from": "0622000",
-        "to": "0622895",
-        "rate": None,
-        "fixed": None
-    }),
-
-    ("cold_h2o", {
-        "from": "05360000",
-        "to":   "00539999",
-        "rate": None,
-        "fixed": None
-    })
-]
-
-def calculate_utils():
-    params = ("from", "to", "rate", "fixed")
-
-    for util in utils:
-        util_name = util[0]
-        util_params = util[1]
-        
-        for param in params:
-            util_param = util_params[param]
-            if util_param is not None:
-                param_to_number = float(util_params[param].lstrip("0"))
-
-
-print(calculate_utils())
