@@ -101,6 +101,7 @@ class ManagementWindow(QMainWindow):
 
         self.submit_btn = QPushButton(self)
         self.submit_btn.setText("Issiusti")
+        self.submit_btn.clicked.connect(self.get_values)
 
         # Create widgets to add to layout dynamically
         widgets = dict()
@@ -123,3 +124,6 @@ class ManagementWindow(QMainWindow):
 
         grid.addWidget(self.submit_btn, row, int(row / 2), 1, 1)
 
+    def get_values(self):
+        print(self.rent_fixed.text())
+        pass
