@@ -1,6 +1,7 @@
 
 class UtilitiesCalc():
-    def __init__(self): 
+    def __init__(self, tenn_count): 
+        self.num_of_tenn = tenn_count
         self.utils = {}
 
     def add_util(self, u_name, u_from=None, u_to=None, u_rate=None, u_fxd=None, u_pay_val=None):
@@ -46,9 +47,13 @@ class UtilitiesCalc():
     def _update_pay_val(self, u_name, u_vals):
         self.utils[u_name] = u_vals
 
-    def get_for_each(self, num_of_tenn):
-        self._set_total()
-        return self.get_total() / num_of_tenn
+    def _set_for_each(self):
+       
+        self.total_for_each = self.total / self.num_of_tenn 
+
+    def get_for_each(self):
+        self._set_for_each()
+        return self.total_for_each
 
     def _set_total(self):
         self.total = 0
@@ -56,6 +61,7 @@ class UtilitiesCalc():
             self.total += util["pay_val"]
     
     def get_total(self):
+        self._set_total()
         return self.total
 
 
@@ -67,7 +73,7 @@ utils = {
     "cold_h2o": {"from": "551", "to": "557", "rate": None, "fixed": None},
 }
 
-uc = UtilitiesCalc()
+uc = UtilitiesCalc(2)
 
 uc.add_util("el", "10866", "10946.3", "0.214")
 uc.add_util("gas", "1496", "1498.6", "1.4", "0.56")
@@ -76,4 +82,5 @@ uc.add_util("cold_h2o", "551", "557", u_pay_val="11.15")
 uc.add_util("laiptine", u_pay_val="28.87" )
 uc.add_util("rent", u_pay_val="350" )
 
-print(uc.get_for_each(2))
+print(uc.get_total())
+print(uc.get_for_each())
