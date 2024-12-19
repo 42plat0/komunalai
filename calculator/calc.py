@@ -66,21 +66,21 @@ class UtilitiesCalc():
 
 
 
-utils = {
-    "electricity": {"from": "10866", "to": "10946.3", "rate": "0.214", "fixed": None},
-    "gas": {"from": "1496", "to": "1498.6", "rate": "1.4", "fixed": "0.56"},
-    "hot_h2o": {"from": "627", "to": "629", "rate": None, "fixed": None},
-    "cold_h2o": {"from": "551", "to": "557", "rate": None, "fixed": None},
-}
+#utils = {
+    #"electricity": {"from": "10866", "to": "10946.3", "rate": "0.214", "fixed": None},
+    #"gas": {"from": "1496", "to": "1498.6", "rate": "1.4", "fixed": "0.56"},
+    #"hot_h2o": {"from": "627", "to": "629", "rate": None, "fixed": None},
+    #"cold_h2o": {"from": "551", "to": "557", "rate": None, "fixed": None},
+#}
 
-uc = UtilitiesCalc(2)
+#uc = UtilitiesCalc(2)
 
-uc.add_util("el", "10866", "10946.3", "0.214")
-uc.add_util("gas", "1496", "1498.6", "1.4", "0.56")
-uc.add_util("hot_h2o", "627", "629", u_pay_val="31.9")
-uc.add_util("cold_h2o", "551", "557", u_pay_val="11.15")
-uc.add_util("laiptine", u_pay_val="28.87" )
-uc.add_util("rent", u_pay_val="350" )
+#uc.add_util("el", "10866", "10946.3", "0.214")
+#uc.add_util("gas", "1496", "1498.6", "1.4", "0.56")
+#uc.add_util("hot_h2o", "627", "629", u_pay_val="31.9")
+#uc.add_util("cold_h2o", "551", "557", u_pay_val="11.15")
+#uc.add_util("laiptine", u_pay_val="28.87" )
+#uc.add_util("rent", u_pay_val="350" )
 
-print(uc.get_total())
-print(uc.get_for_each())
+#print(uc.get_total())
+#print(uc.get_for_each())

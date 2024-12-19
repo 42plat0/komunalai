@@ -10,13 +10,14 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtCore import QRect, Qt
 
+from calculator.calc import UtilitiesCalc
 
 class ManagementWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.calc_wind()
 
-        fields = ["from", "to", "rate", "fixed"]
-
+    def calc_wind(self):
         self.setWindowTitle("Komunalai")
 
         central_w = QWidget()
@@ -60,12 +61,14 @@ class ManagementWindow(QMainWindow):
         self.cold_h2o_value_from = QLineEdit(self)
         self.cold_h2o_value_to = QLineEdit(self)
         self.cold_h2o_rate = QLineEdit(self)
-        self.cold_h2o_fixed = QLineEdit(self)
+        self.cold_h2o_pay_val = QLineEdit(self)
 
         self.cold_h2o_value_from.setPlaceholderText("Nuo")
         self.cold_h2o_value_to.setPlaceholderText("Iki")
-        self.cold_h2o_rate.setPlaceholderText("Tarifas")
-        self.cold_h2o_fixed.setPlaceholderText("Pastovus")
+        self.cold_h2o_rate.setPlaceholderText("-")
+        self.cold_h2o_pay_val.setPlaceholderText("Moketi")
+
+        self.cold_h2o_rate.setEnabled(False)
 
         # Karstas
         self.hot_h2o_label = QLabel(self)
@@ -74,12 +77,33 @@ class ManagementWindow(QMainWindow):
         self.hot_h2o_value_from = QLineEdit(self)
         self.hot_h2o_value_to = QLineEdit(self)
         self.hot_h2o_rate = QLineEdit(self)
-        self.hot_h2o_fixed = QLineEdit(self)
+        self.hot_h2o_pay_val = QLineEdit(self)
 
         self.hot_h2o_value_from.setPlaceholderText("Nuo")
         self.hot_h2o_value_to.setPlaceholderText("Iki")
-        self.hot_h2o_rate.setPlaceholderText("Tarifas")
-        self.hot_h2o_fixed.setPlaceholderText("Pastovus")
+        self.hot_h2o_rate.setPlaceholderText("-")
+        self.hot_h2o_pay_val.setPlaceholderText("Moketi")
+        
+        self.hot_h2o_rate.setEnabled(False)
+
+
+        # Laiptine
+        self.admin_label = QLabel(self)
+        self.admin_label.setText("Laiptine")
+
+        self.admin_value_from = QLineEdit(self)
+        self.admin_value_to = QLineEdit(self)
+        self.admin_rate = QLineEdit(self)
+        self.admin_pay_val = QLineEdit(self)
+
+        self.admin_value_from.setEnabled(False), self.admin_value_to.setEnabled(
+            False
+        ), self.admin_rate.setEnabled(False)
+
+        self.admin_value_from.setPlaceholderText("-")
+        self.admin_value_to.setPlaceholderText("-")
+        self.admin_rate.setPlaceholderText("-")
+        self.admin_pay_val.setPlaceholderText("Moketi")
 
         # Nuoma
         self.rent_label = QLabel(self)
@@ -88,7 +112,7 @@ class ManagementWindow(QMainWindow):
         self.rent_value_from = QLineEdit(self)
         self.rent_value_to = QLineEdit(self)
         self.rent_rate = QLineEdit(self)
-        self.rent_fixed = QLineEdit(self)
+        self.rent_pay_val = QLineEdit(self)
 
         self.rent_value_from.setEnabled(False), self.rent_value_to.setEnabled(
             False
@@ -97,10 +121,10 @@ class ManagementWindow(QMainWindow):
         self.rent_value_from.setPlaceholderText("-")
         self.rent_value_to.setPlaceholderText("-")
         self.rent_rate.setPlaceholderText("-")
-        self.rent_fixed.setPlaceholderText("Pastovus")
+        self.rent_pay_val.setPlaceholderText("Moketi")
 
         self.submit_btn = QPushButton(self)
-        self.submit_btn.setText("Issiusti")
+        self.submit_btn.setText("Apskaiciuoti")
         self.submit_btn.clicked.connect(self.get_values)
 
         # Create widgets to add to layout dynamically
@@ -122,8 +146,35 @@ class ManagementWindow(QMainWindow):
 
             row += 1
 
-        grid.addWidget(self.submit_btn, row, int(row / 2), 1, 1)
+        grid.addWidget(self.submit_btn, row, int(row / 2) - 1, 1, 1)
 
-    def get_values(self):
-        print(self.rent_fixed.text())
+    def log_wind(self):
+        # Elektra
+        self.electricity_label = QLabel(self)
+        self.electricity_label.setText("Elektra:")
+
+        self.electricity_value_from = QLineEdit(self)
+        self.electricity_value_to = QLineEdit(self)
+        self.electricity_rate = QLineEdit(self)
+        self.electricity_fixed = QLineEdit(self)
+
+        self.electricity_value_from.setPlaceholderText("Nuo")
+        self.electricity_value_to.setPlaceholderText("Iki")
+        self.electricity_rate.setPlaceholderText("Tarifas")
+        self.electricity_fixed.setPlaceholderText("Pastovus")
+
+
         pass
+    def get_values(self):
+        self._set_utilities()
+
+        
+    def _set_utilities(self):
+        uc = UtilitiesCalc(2) 
+
+        uc.add_util("electricity", self.electricity_value_from.text(), self.electricity_value_to.text(), self.electricity_rate.text(), self.electricity_fixed.text())
+        uc.add_util("gas", self.gas_value_from.text(), self.gas_value_to.text(), self.gas_rate.text(), self.gas_fixed.text())
+        uc.add_util("hot h2o", self.hot_h2o_value_from.text(), self.hot_h2o_value_to.text(), self.hot_h2o_rate.text(), u_pay_val= self.hot_h2o_pay_val.text())
+        uc.add_util("cold h2o", self.cold_h2o_value_from.text(), self.cold_h2o_value_to.text(), self.cold_h2o_rate.text(), u_pay_val=self.cold_h2o_pay_val.text())
+        uc.add_util("admin", u_pay_val="28.87" )
+        uc.add_util("rent", u_pay_val=self.rent_pay_val.text())
