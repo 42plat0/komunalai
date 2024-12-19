@@ -125,7 +125,7 @@ class ManagementWindow(QMainWindow):
 
         self.submit_btn = QPushButton(self)
         self.submit_btn.setText("Apskaiciuoti")
-        self.submit_btn.clicked.connect(self.get_values)
+        self.submit_btn.clicked.connect(self.log_wind)
 
         # Create widgets to add to layout dynamically
         widgets = dict()
@@ -149,32 +149,32 @@ class ManagementWindow(QMainWindow):
         grid.addWidget(self.submit_btn, row, int(row / 2) - 1, 1, 1)
 
     def log_wind(self):
-        # Elektra
-        self.electricity_label = QLabel(self)
-        self.electricity_label.setText("Elektra:")
+        central_w = QWidget()
+        self.setCentralWidget(central_w)
+        self.setGeometry(700, 300, 500, 250)
 
-        self.electricity_value_from = QLineEdit(self)
-        self.electricity_value_to = QLineEdit(self)
-        self.electricity_rate = QLineEdit(self)
-        self.electricity_fixed = QLineEdit(self)
-
-        self.electricity_value_from.setPlaceholderText("Nuo")
-        self.electricity_value_to.setPlaceholderText("Iki")
-        self.electricity_rate.setPlaceholderText("Tarifas")
-        self.electricity_fixed.setPlaceholderText("Pastovus")
-
-
-        pass
-    def get_values(self):
+        grid = QGridLayout(central_w)
         self._set_utilities()
+        for u_name, u_vals in self.uc.utils.items():
+            self.u_label = QLabel(self)
+            self.u_label.setText(u_name.capitalize() + f" - Nuo {u_vals["from"] if u_vals["from"] else "-"}" + f" - Iki {u_vals["to"] if u_vals["to"] else "-"}" + f" - Moketi: {u_vals["pay_val"]}")
+            
+            grid.addWidget(self.u_label) 
 
-        
+        total = self.uc.get_total()
+        for_each = self.uc.get_for_each()
+
+        self.pay_label = QLabel(self)
+        self.pay_label.setText(f"Viso {total}, kiekvienam {for_each}") 
+        grid.addWidget(self.pay_label)
+               
+
     def _set_utilities(self):
-        uc = UtilitiesCalc(2) 
+        self.uc = UtilitiesCalc(2) 
 
-        uc.add_util("electricity", self.electricity_value_from.text(), self.electricity_value_to.text(), self.electricity_rate.text(), self.electricity_fixed.text())
-        uc.add_util("gas", self.gas_value_from.text(), self.gas_value_to.text(), self.gas_rate.text(), self.gas_fixed.text())
-        uc.add_util("hot h2o", self.hot_h2o_value_from.text(), self.hot_h2o_value_to.text(), self.hot_h2o_rate.text(), u_pay_val= self.hot_h2o_pay_val.text())
-        uc.add_util("cold h2o", self.cold_h2o_value_from.text(), self.cold_h2o_value_to.text(), self.cold_h2o_rate.text(), u_pay_val=self.cold_h2o_pay_val.text())
-        uc.add_util("admin", u_pay_val="28.87" )
-        uc.add_util("rent", u_pay_val=self.rent_pay_val.text())
+        self.uc.add_util("electricity", self.electricity_value_from.text(), self.electricity_value_to.text(), self.electricity_rate.text(), self.electricity_fixed.text())
+        self.uc.add_util("gas", self.gas_value_from.text(), self.gas_value_to.text(), self.gas_rate.text(), self.gas_fixed.text())
+        self.uc.add_util("hot h2o", self.hot_h2o_value_from.text(), self.hot_h2o_value_to.text(), self.hot_h2o_rate.text(), u_pay_val= self.hot_h2o_pay_val.text())
+        self.uc.add_util("cold h2o", self.cold_h2o_value_from.text(), self.cold_h2o_value_to.text(), self.cold_h2o_rate.text(), u_pay_val=self.cold_h2o_pay_val.text())
+        self.uc.add_util("admin", u_pay_val="28.87" )
+        self.uc.add_util("rent", u_pay_val=self.rent_pay_val.text())
