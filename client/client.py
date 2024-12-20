@@ -8,9 +8,11 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 from PyQt5.QtGui import QPainter, QPixmap
-from PyQt5.QtCore import QRect, Qt
+from PyQt5 import QtCore
+
 
 from calculator.calc import UtilitiesCalc
+
 
 class ManagementWindow(QMainWindow):
     def __init__(self):
@@ -19,7 +21,6 @@ class ManagementWindow(QMainWindow):
 
     def calc_wind(self):
         self.setWindowTitle("Komunalai")
-
         central_w = QWidget()
         self.setCentralWidget(central_w)
         self.setGeometry(700, 300, 500, 250)
@@ -83,9 +84,8 @@ class ManagementWindow(QMainWindow):
         self.hot_h2o_value_to.setPlaceholderText("Iki")
         self.hot_h2o_rate.setPlaceholderText("-")
         self.hot_h2o_pay_val.setPlaceholderText("Moketi")
-        
-        self.hot_h2o_rate.setEnabled(False)
 
+        self.hot_h2o_rate.setEnabled(False)
 
         # Laiptine
         self.admin_label = QLabel(self)
@@ -157,24 +157,61 @@ class ManagementWindow(QMainWindow):
         self._set_utilities()
         for u_name, u_vals in self.uc.utils.items():
             self.u_label = QLabel(self)
-            self.u_label.setText(u_name.capitalize() + f" - Nuo {u_vals["from"] if u_vals["from"] else "-"}" + f" - Iki {u_vals["to"] if u_vals["to"] else "-"}" + f" - Moketi: {u_vals["pay_val"]}")
-            
-            grid.addWidget(self.u_label) 
+            self.u_label.setText(u_name.upper() + "\n-----------")
+            self.u_label.setAlignment(QtCore.Qt.AlignCenter)
+
+            self.u_vals = QLabel(self)
+            self.u_vals.setText(
+                f"Nuo {u_vals["from"] if u_vals["from"] else "-"}"
+                + f"\nIki {u_vals["to"] if u_vals["to"] else "-"}"
+                + f"\nSkirtumas {u_vals["diff"] if u_vals["diff"] else "-"}"
+                + f"\nMoketi: {u_vals["pay_val"]}"
+            )
+            self.u_vals.setAlignment(QtCore.Qt.AlignCenter)
+
+            grid.addWidget(self.u_label)
+            grid.addWidget(self.u_vals)
 
         total = self.uc.get_total()
         for_each = self.uc.get_for_each()
 
         self.pay_label = QLabel(self)
-        self.pay_label.setText(f"Viso {total}, kiekvienam {for_each}") 
+        self.pay_label.setText(f"----\nViso {total}\nKiekvienam {for_each}")
+        self.pay_label.setAlignment(QtCore.Qt.AlignCenter)
+
         grid.addWidget(self.pay_label)
-               
 
+        
     def _set_utilities(self):
-        self.uc = UtilitiesCalc(2) 
+        self.uc = UtilitiesCalc(2)
 
-        self.uc.add_util("electricity", self.electricity_value_from.text(), self.electricity_value_to.text(), self.electricity_rate.text(), self.electricity_fixed.text())
-        self.uc.add_util("gas", self.gas_value_from.text(), self.gas_value_to.text(), self.gas_rate.text(), self.gas_fixed.text())
-        self.uc.add_util("hot h2o", self.hot_h2o_value_from.text(), self.hot_h2o_value_to.text(), self.hot_h2o_rate.text(), u_pay_val= self.hot_h2o_pay_val.text())
-        self.uc.add_util("cold h2o", self.cold_h2o_value_from.text(), self.cold_h2o_value_to.text(), self.cold_h2o_rate.text(), u_pay_val=self.cold_h2o_pay_val.text())
-        self.uc.add_util("admin", u_pay_val="28.87" )
+        self.uc.add_util(
+            "electricity",
+            self.electricity_value_from.text(),
+            self.electricity_value_to.text(),
+            self.electricity_rate.text(),
+            self.electricity_fixed.text(),
+        )
+        self.uc.add_util(
+            "gas",
+            self.gas_value_from.text(),
+            self.gas_value_to.text(),
+            self.gas_rate.text(),
+            self.gas_fixed.text(),
+        )
+        self.uc.add_util(
+            "hot h2o",
+            self.hot_h2o_value_from.text(),
+            self.hot_h2o_value_to.text(),
+            self.hot_h2o_rate.text(),
+            u_pay_val=self.hot_h2o_pay_val.text(),
+        )
+        self.uc.add_util(
+            "cold h2o",
+            self.cold_h2o_value_from.text(),
+            self.cold_h2o_value_to.text(),
+            self.cold_h2o_rate.text(),
+            u_pay_val=self.cold_h2o_pay_val.text(),
+        )
+        self.uc.add_util("admin", u_pay_val="28.87")
         self.uc.add_util("rent", u_pay_val=self.rent_pay_val.text())
