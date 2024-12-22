@@ -219,7 +219,7 @@ class ManagementWindow(QMainWindow):
         for_each = self.uc.get_for_each()
 
         self.pay_label = QLabel(self)
-        self.pay_label.setText(f"----\nViso {total}\nKiekvienam {for_each}")
+        self.pay_label.setText(f"----\nViso {total:.2f}\nKiekvienam {for_each:.2f}")
         self.pay_label.setAlignment(QtCore.Qt.AlignCenter)
 
         grid.addWidget(self.pay_label)
